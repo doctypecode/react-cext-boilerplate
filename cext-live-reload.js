@@ -1,5 +1,3 @@
-/* global chrome */
-
 // Keep only one reload domain open
 const RELOAD_DOMAINS = ["localhost:3000"];
 const ReloadTabKey = "reloadTabId";
@@ -11,21 +9,24 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
     changeInfo.status === "complete" &&
     RELOAD_DOMAINS.find((url) => tab.url.includes(url))
   ) {
-    chrome.tabs.query({ active: true }, function (tabArray) {
-      chrome.storage.sync.set({ [ReloadTabKey]: tabArray[0] }, function () {
-        if (chrome.runtime.lastError) {
-          console.error(
-            "Error setting " +
-              key +
-              " to " +
-              JSON.stringify(data) +
-              ": " +
-              chrome.runtime.lastError.message
-          );
-        }
-        chrome.runtime.reload();
-      });
-    });
+    chrome.tabs.query(
+      { lastFocusedWindow: true, active: true },
+      function (tabArray) {
+        chrome.storage.sync.set({ [ReloadTabKey]: tabArray[0] }, function () {
+          if (chrome.runtime.lastError) {
+            console.error(
+              "Error setting " +
+                key +
+                " to " +
+                JSON.stringify(data) +
+                ": " +
+                chrome.runtime.lastError.message
+            );
+          }
+          chrome.runtime.reload();
+        });
+      }
+    );
   }
 });
 

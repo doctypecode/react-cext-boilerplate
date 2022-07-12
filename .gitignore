@@ -13,6 +13,7 @@
 
 # development
 /watch
+/dist
 
 # misc
 .DS_Store

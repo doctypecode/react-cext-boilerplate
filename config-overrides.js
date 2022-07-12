@@ -45,12 +45,24 @@ const getFileManagerPlugin = () => {
         copy: [
           {
             source: "public",
-            destination: "build",
+            destination: isProduction() ? "build" : "watch",
           },
         ],
       },
     },
   });
+};
+
+const getOutputConfig = () => {
+  const output = {
+    path: path.resolve(__dirname + "/watch"),
+    publicPath: "/",
+    filename: "[name].js", // name configuration for the output files
+  };
+  if (isProduction()) {
+    output.path = path.resolve(__dirname + "/build");
+  }
+  return output;
 };
 
 module.exports = {
@@ -80,16 +92,7 @@ module.exports = {
 
     config.optimization.runtimeChunk = false;
 
-    isProduction() &&
-      (config.output = {
-        ...config.output,
-        publicPath: "./dist",
-      });
-
-    config.output = {
-      ...config.output,
-      filename: "[name].js", // name configuration for the output files
-    };
+    config.output = getOutputConfig(config);
 
     // Add File Manager Plugin
     config.plugins = [...config.plugins, getFileManagerPlugin()];

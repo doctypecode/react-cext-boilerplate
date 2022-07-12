@@ -1,7 +1,7 @@
 const CSApp = () => {
   return (
 		<div className="app-container">
-			 Content Script!!
+			 Live reload works!!
 		</div>
 	);
 };
